@@ -16,7 +16,7 @@ public interface BuildingMapperForAdd {
     @Mappings({
             @Mapping(target = "images", ignore = true),
             @Mapping(target = "corps", ignore = true),
-            @Mapping(target = "news", ignore = true),
+            @Mapping(target = "newses", ignore = true),
             @Mapping(target = "documents", ignore = true)
     })
     void updateEntityFromDto(BuildingDtoForAdd buildingDtoForAdd, @MappingTarget Building building);
