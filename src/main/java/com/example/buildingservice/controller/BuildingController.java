@@ -1,6 +1,7 @@
 package com.example.buildingservice.controller;
 
 import com.example.buildingservice.dto.BuildingDtoForAdd;
+import com.example.buildingservice.dto.BuildingDtoForFilter;
 import com.example.buildingservice.dto.BuildingDtoForInformationPage;
 import com.example.buildingservice.dto.BuildingDtoForViewAll;
 import com.example.buildingservice.entity.enums.StatusState;
@@ -53,6 +54,10 @@ public class BuildingController {
     @GetMapping("/get-building-for-information-page/{buildingId}")
     public ResponseEntity<BuildingDtoForInformationPage> getBuildingForInformationPage(@PathVariable Long buildingId){
         return ResponseEntity.ok(buildingService.getBuildingForInformationPage(buildingId));
+    }
+    @GetMapping("/get-all-for-customer")
+    public ResponseEntity<Page<BuildingDtoForViewAll>> getAllForCustomer(@ModelAttribute BuildingDtoForFilter buildingDtoForFilter){
+        return ResponseEntity.ok(buildingService.getAllForCustomer(buildingDtoForFilter));
     }
     @PostMapping("/add")
     public ResponseEntity<Map<String, String>> add(@ModelAttribute @Valid BuildingDtoForAdd buildingDtoForAdd, BindingResult bindingResult) throws IOException {

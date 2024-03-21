@@ -12,7 +12,6 @@ import com.example.buildingservice.mapper.BuildingMapperForInformationPage;
 import com.example.buildingservice.mapper.BuildingMapperForViewAll;
 import com.example.buildingservice.repository.BuildingRepository;
 import com.example.buildingservice.service.BuildingService;
-import com.example.buildingservice.service.client.MinioServiceClient;
 import com.example.buildingservice.specification.BuildingSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ public class BuildingServiceImpl implements BuildingService {
         return buildingMapperForViewAll.toDtoPage(buildingRepository.findAllByNameLike(houseName, pageable));
     }
     @Override
-    public Page<BuildingDtoForViewAll> getAllForCustomer(Integer page, Integer pageSize, BuildingDtoForFilter buildingDtoForFilter) {
+    public Page<BuildingDtoForViewAll> getAllForCustomer(BuildingDtoForFilter buildingDtoForFilter) {
         Specification<Building> specification = new BuildingSpecification(buildingDtoForFilter);
         Pageable pageable = PageRequest.of(buildingDtoForFilter.getPage(), buildingDtoForFilter.getPageSize(), Sort.by(Sort.Order.desc("id")));
         Page<BuildingDtoForViewAll> result =  buildingMapperForViewAll.toDtoPage(buildingRepository.findAll(specification, pageable));

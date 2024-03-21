@@ -13,7 +13,7 @@ import java.util.Map;
 
 public interface BuildingService {
     Page<BuildingDtoForViewAll> getAllForAdmin(Integer page, Integer pageSize, String houseName);
-    Page<BuildingDtoForViewAll> getAllForCustomer(Integer page, Integer pageSize, BuildingDtoForFilter buildingDtoForFilter);
+    Page<BuildingDtoForViewAll> getAllForCustomer(BuildingDtoForFilter buildingDtoForFilter);
     Building getById(Long builderId);
     Map<Long, String> getAllCorpsByBuildingId(Long builderId);
     void changeStatus(Long builderId, StatusState statusState);
