@@ -31,10 +31,10 @@ public class BuildingSpecification implements Specification<Building> {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("pricePerSquareMeter"), buildingDtoForFilter.getMaxPrice()));
         }
         if(buildingDtoForFilter.getMinArea()!=null) {
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("minArea"), buildingDtoForFilter.getMinPrice()));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("minArea"), buildingDtoForFilter.getMinArea()));
         }
         if(buildingDtoForFilter.getMaxArea()!=null) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("maxArea"), buildingDtoForFilter.getMaxPrice()));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("maxArea"), buildingDtoForFilter.getMaxArea()));
         }
 
         if(buildingDtoForFilter.getStatusBuilding()!=null) {
