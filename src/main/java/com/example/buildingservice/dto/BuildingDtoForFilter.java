@@ -1,9 +1,11 @@
 package com.example.buildingservice.dto;
 
 import com.example.buildingservice.entity.enums.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
+@Schema(description = "DTO for the filtering buildings")
 public class BuildingDtoForFilter {
     private Integer page;
     private Integer pageSize;

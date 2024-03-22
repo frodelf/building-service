@@ -28,6 +28,7 @@ ext {
     set("mapstructVersion", "1.5.5.Final")
     set("lombokVersion", "1.18.30")
     set("lombokMapstructBindingVersion", "0.2.0")
+    set("springDocVersion", "2.3.0")
     set('springCloudVersion', "2023.0.0")
 }
 
@@ -45,6 +46,7 @@ dependencies {
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}", "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: "${springDocVersion}"
 }
 
 dependencyManagement {

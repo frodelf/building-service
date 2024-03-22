@@ -1,24 +1,22 @@
 package com.example.buildingservice.controller;
 
-import com.example.buildingservice.entity.Corps;
-import com.example.buildingservice.service.CorpsService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@Log4j2
-@RestController
-@RequestMapping("/api/v1/corps")
-@RequiredArgsConstructor
-public class CorpsController {
-    private final CorpsService corpsService;
-    @GetMapping("/get-address/{corpID}")
-    public ResponseEntity<String> getAddress(@PathVariable Long corpID){
-        Corps corps = corpsService.getById(corpID);
-        return ResponseEntity.ok(corps.getBuilding().getAddress());
-    }
+@Tag(name = "Course controller", description = "Course API")
+public interface CorpsController {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to get house's address by corps id.")
+    ResponseEntity<String> getAddress(@Parameter(required = true, description = "Corps id") @PathVariable Long corpID);
 }

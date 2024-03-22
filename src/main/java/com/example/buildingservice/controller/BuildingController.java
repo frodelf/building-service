@@ -4,70 +4,93 @@ import com.example.buildingservice.dto.BuildingDtoForAdd;
 import com.example.buildingservice.dto.BuildingDtoForFilter;
 import com.example.buildingservice.dto.BuildingDtoForInformationPage;
 import com.example.buildingservice.dto.BuildingDtoForViewAll;
-import com.example.buildingservice.entity.enums.StatusState;
-import com.example.buildingservice.service.BuildingService;
-import com.example.buildingservice.validator.BuildingValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
-@Log4j2
-@RestController
-@RequestMapping("/api/v1/building")
-@RequiredArgsConstructor
-public class BuildingController {
-    private final BuildingService buildingService;
-    private final BuildingValidator buildingValidator;
-    @GetMapping("/admin/get-all")
-    public ResponseEntity<Page<BuildingDtoForViewAll>> getAllBuildingsForAdmin(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam String houseName){
-        return ResponseEntity.ok(buildingService.getAllForAdmin(page, pageSize, houseName));
-    }
-    @GetMapping("/admin/get-all-corps-by-building-id/{buildingId}")
-    public ResponseEntity<Map<Long, String>> getAllCorps(@PathVariable Long buildingId){
-        return ResponseEntity.ok(buildingService.getAllCorpsByBuildingId(buildingId));
-    }
-    @PutMapping("/admin/delete/{builderId}")
-    public ResponseEntity<String> deleteById(@PathVariable Long builderId){
-        buildingService.changeStatus(builderId, StatusState.DELETED);
-        return ResponseEntity.ok("deleted");
-    }
-    @PutMapping("/admin/rejected/{builderId}")
-    public ResponseEntity<String> rejectedById(@PathVariable Long builderId){
-        buildingService.changeStatus(builderId, StatusState.REJECTED);
-        return ResponseEntity.ok("changed");
-    }
-    @PutMapping("/admin/approved/{builderId}")
-    public ResponseEntity<String> approvedById(@PathVariable Long builderId){
-        buildingService.changeStatus(builderId, StatusState.APPROVED);
-        return ResponseEntity.ok("changed");
-    }
-    @GetMapping("/get-building-for-information-page/{buildingId}")
-    public ResponseEntity<BuildingDtoForInformationPage> getBuildingForInformationPage(@PathVariable Long buildingId){
-        return ResponseEntity.ok(buildingService.getBuildingForInformationPage(buildingId));
-    }
-    @GetMapping("/get-all-for-customer")
-    public ResponseEntity<Page<BuildingDtoForViewAll>> getAllForCustomer(@ModelAttribute BuildingDtoForFilter buildingDtoForFilter){
-        return ResponseEntity.ok(buildingService.getAllForCustomer(buildingDtoForFilter));
-    }
-    @PostMapping("/add")
-    public ResponseEntity<Map<String, String>> add(@ModelAttribute @Valid BuildingDtoForAdd buildingDtoForAdd, BindingResult bindingResult) throws IOException {
-        buildingValidator.validate(buildingDtoForAdd, bindingResult);
-        Map<String, String> errorsMap = new HashMap<>();
-        if (bindingResult.hasErrors()) {
-            bindingResult.getFieldErrors().forEach(error -> errorsMap.put(error.getField(), error.getDefaultMessage()));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsMap);
-        }
-        buildingService.add(buildingDtoForAdd);
-        return ResponseEntity.ok().body(Collections.singletonMap("status", "saved"));
-    }
+@Tag(name = "Building controller", description = "Building API")
+public interface BuildingController {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to get all buildings for admin panel by house name(like)")
+    ResponseEntity<Page<BuildingDtoForViewAll>> getAllBuildingsForAdmin(@Parameter(description = "Page for pagination") @RequestParam Integer page, @Parameter(description = "Page size for page numbering") @RequestParam Integer pageSize, @Parameter(description = "House name for filtering") @RequestParam String houseName);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to get all corpses by building id")
+    ResponseEntity<Map<Long, String>> getAllCorps(@Parameter(description = "Building id by which all corpses will be found") @PathVariable Long buildingId);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to delete building by id")
+    ResponseEntity<String> deleteById(@Parameter(description = "Building id by which building will be deleted") @PathVariable Long builderId);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to reject building by id")
+    ResponseEntity<String> rejectedById(@Parameter(description = "Building id by which building will be rejected") @PathVariable Long builderId);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to approved building by id")
+    ResponseEntity<String> approvedById(@Parameter(description = "Building id by which building will be approved") @PathVariable Long builderId);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to get building by id for information page")
+    ResponseEntity<BuildingDtoForInformationPage> getBuildingForInformationPage(@Parameter(description = "Building id for information part") @PathVariable Long buildingId);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to get all buildings for customer and filtering this objects")
+    ResponseEntity<Page<BuildingDtoForViewAll>> getAllForCustomer(@RequestBody(description = "DTO for filtering buildings") @ModelAttribute BuildingDtoForFilter buildingDtoForFilter);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Resource not found."),
+    })
+    @Operation(summary = "The request to add building")
+    ResponseEntity<Map<String, String>> add(@RequestBody(description = "DTO for adding/updating to building") @ModelAttribute @Valid BuildingDtoForAdd buildingDtoForAdd, BindingResult bindingResult) throws IOException ;
 }
