@@ -50,4 +50,4 @@ jobs:
               docker rm slj_househub_building_dd || true
             fi
             docker pull ${{ secrets.secret_name_docker_hub_lower_case }}/spring-boot-for-beginners:latest
-            docker run -d -p 4408:47078 --name slj_househub_building_dd --network slj_househub_network_dd ${{ secrets.secret_name_docker_hub_lower_case }}/spring-boot-for-beginners:latest
+            docker run -d -p 4408:47078 --name slj_househub_building_dd --hostname building-service --network slj_househub_network_dd ${{ secrets.secret_name_docker_hub_lower_case }}/spring-boot-for-beginners:latest
