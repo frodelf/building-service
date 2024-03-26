@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MinioServiceClient {
-    private final static String URL = "http://localhost:47074/minio/api/v1/minio";
+    private final static String URL = "http://minio:47077/api/v1/minio";
     public static String deleteImage(String image) {
         RestTemplate restTemplate = new RestTemplate();
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL + "/delete/"+image);
