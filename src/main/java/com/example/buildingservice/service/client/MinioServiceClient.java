@@ -3,6 +3,7 @@ package com.example.buildingservice.service.client;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -12,16 +13,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class MinioServiceClient {
     private final static String URL = "http://minio:47077/api/v1/minio";
-    public static String deleteImage(String image) {
+    public String deleteImage(String image) {
         RestTemplate restTemplate = new RestTemplate();
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL + "/delete/"+image);
         ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.DELETE, null, String.class);
         return response.getBody();
     }
-    public static String save(MultipartFile image) throws IOException {
+    public String save(MultipartFile image) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -37,14 +38,14 @@ public class MinioServiceClient {
 
         return restTemplate.postForEntity(URL+"/save", requestEntity, String.class).getBody();
     }
-    public static String getUrl(String url) {
+    public String getUrl(String url) {
         RestTemplate restTemplate = new RestTemplate();
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL + "/get")
                 .queryParam("url", url);
         ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
         return response.getBody();
     }
-    public static List<String> getUrl(List<String> urls) {
+    public List<String> getUrl(List<String> urls) {
         RestTemplate restTemplate = new RestTemplate();
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL + "/get/list");
 
@@ -62,10 +63,10 @@ public class MinioServiceClient {
         return response.getBody();
     }
 
-    public static List<String> saveAll(List<MultipartFile> images) throws IOException {
+    public List<String> saveAll(List<MultipartFile> images) throws IOException {
         ArrayList<String> result = new ArrayList<>();
         for (MultipartFile image : images) {
-            result.add(MinioServiceClient.save(image));
+            result.add(save(image));
         }
         return result;
     }

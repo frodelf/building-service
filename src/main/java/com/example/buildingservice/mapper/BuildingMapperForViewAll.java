@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 public interface BuildingMapperForViewAll {
     @Mapping(target = "image", ignore = true)
     BuildingDtoForViewAll toDto(Building building);
-    default BuildingDtoForViewAll toDtoFromEntity(Building building) {
+    default BuildingDtoForViewAll toDtoFromEntity(Building building, MinioServiceClient minioServiceClient) {
         BuildingDtoForViewAll buildingDtoForViewAll = toDto(building);
-        if(building.getImages()!=null && building.getImages().get(0)!=null)buildingDtoForViewAll.setImage(MinioServiceClient.getUrl(building.getImages().get(0)));
+        if(building.getImages()!=null && building.getImages().get(0)!=null)buildingDtoForViewAll.setImage(minioServiceClient.getUrl(building.getImages().get(0)));
         return buildingDtoForViewAll;
     }
-    default Page<BuildingDtoForViewAll> toDtoPage(Page<Building> buildings){
+    default Page<BuildingDtoForViewAll> toDtoPage(Page<Building> buildings, MinioServiceClient minioServiceClient){
         return new PageImpl<>(buildings.getContent().stream()
-                .map(building -> toDtoFromEntity(building))
+                .map(building -> toDtoFromEntity(building, minioServiceClient))
                 .collect(Collectors.toList()), buildings.getPageable(), buildings.getTotalElements());
     }
 }

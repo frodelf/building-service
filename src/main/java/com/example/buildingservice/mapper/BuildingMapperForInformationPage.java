@@ -20,7 +20,7 @@ public interface BuildingMapperForInformationPage {
             @Mapping(target = "documents", ignore = true)
     })
     BuildingDtoForInformationPage toDto(Building building);
-    default BuildingDtoForInformationPage toDtoFromEntity(Building building){
+    default BuildingDtoForInformationPage toDtoFromEntity(Building building, MinioServiceClient minioServiceClient){
         BuildingDtoForInformationPage buildingDtoForInformationPage = toDto(building);
         buildingDtoForInformationPage.setCorps(new HashMap<>());
         buildingDtoForInformationPage.setNews(new HashMap<>());
@@ -34,8 +34,8 @@ public interface BuildingMapperForInformationPage {
                 buildingDtoForInformationPage.getNews().put(news.getTitle(), news.getDescription());
             }
         }
-        buildingDtoForInformationPage.setImages(MinioServiceClient.getUrl(building.getImages()));
-        buildingDtoForInformationPage.setDocuments(MinioServiceClient.getUrl(building.getDocuments()));
+        buildingDtoForInformationPage.setImages(minioServiceClient.getUrl(building.getImages()));
+        buildingDtoForInformationPage.setDocuments(minioServiceClient.getUrl(building.getDocuments()));
         return buildingDtoForInformationPage;
     }
 }

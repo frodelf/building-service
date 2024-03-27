@@ -12,6 +12,7 @@ import com.example.buildingservice.mapper.BuildingMapperForInformationPage;
 import com.example.buildingservice.mapper.BuildingMapperForViewAll;
 import com.example.buildingservice.repository.BuildingRepository;
 import com.example.buildingservice.service.BuildingService;
+import com.example.buildingservice.service.client.MinioServiceClient;
 import com.example.buildingservice.specification.BuildingSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +37,12 @@ public class BuildingServiceImpl implements BuildingService {
     private final BuildingMapperForAdd buildingMapperForAdd;
     private final BuildingMapperForViewAll buildingMapperForViewAll;
     private final BuildingMapperForInformationPage buildingMapperForInformationPage;
+    private final MinioServiceClient minioServiceClient;
     @Override
     public Page<BuildingDtoForViewAll> getAllForAdmin(Integer page, Integer pageSize, String houseName) {
         log.info("BuildingServiceImpl-getAllForAdmin start");
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Order.desc("id")));
-        Page<BuildingDtoForViewAll> result = buildingMapperForViewAll.toDtoPage(buildingRepository.findAllByNameLike(houseName, pageable));
+        Page<BuildingDtoForViewAll> result = buildingMapperForViewAll.toDtoPage(buildingRepository.findAllByNameLike(houseName, pageable), minioServiceClient);
         log.info("BuildingServiceImpl-getAllForAdmin finish");
         return result;
     }
@@ -49,7 +51,7 @@ public class BuildingServiceImpl implements BuildingService {
         log.info("BuildingServiceImpl-getAllForCustomer start");
         Specification<Building> specification = new BuildingSpecification(buildingDtoForFilter);
         Pageable pageable = PageRequest.of(buildingDtoForFilter.getPage(), buildingDtoForFilter.getPageSize(), Sort.by(Sort.Order.desc("id")));
-        Page<BuildingDtoForViewAll> result =  buildingMapperForViewAll.toDtoPage(buildingRepository.findAll(specification, pageable));
+        Page<BuildingDtoForViewAll> result =  buildingMapperForViewAll.toDtoPage(buildingRepository.findAll(specification, pageable), minioServiceClient);
         log.info("BuildingServiceImpl-getAllForCustomer finish");
         return result;
     }
@@ -95,7 +97,7 @@ public class BuildingServiceImpl implements BuildingService {
     @Override
     public BuildingDtoForInformationPage getBuildingForInformationPage(Long buildingId){
         log.info("BuildingServiceImpl-getBuildingForInformationPage start");
-        BuildingDtoForInformationPage buildingDtoForInformationPage = buildingMapperForInformationPage.toDto(getById(buildingId));
+        BuildingDtoForInformationPage buildingDtoForInformationPage = buildingMapperForInformationPage.toDtoFromEntity(getById(buildingId), minioServiceClient);
         log.info("BuildingServiceImpl-getBuildingForInformationPage finish");
         return buildingDtoForInformationPage;
     }
@@ -103,7 +105,7 @@ public class BuildingServiceImpl implements BuildingService {
     @Transactional
     public void add(BuildingDtoForAdd buildingDtoForAdd) throws IOException {
         log.info("BuildingServiceImpl-add start");
-        save(buildingMapperForAdd.updateEntityFromDto(buildingDtoForAdd, this));
+        save(buildingMapperForAdd.updateEntityFromDto(buildingDtoForAdd, minioServiceClient, this));
         log.info("BuildingServiceImpl-add finish");
     }
 }
